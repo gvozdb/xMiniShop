@@ -52,7 +52,6 @@ miniShop2.utils.getMenu = function (actions, grid, selected) {
         action = a['action'] ? grid[a['action']] : '';
 
         menu.push({
-            baseConfig: a,
             handler: action,
             text: String.format(
                 '<span class="{0}"><i class="x-menu-item-icon {1}"></i>{2}</span>',
@@ -64,6 +63,10 @@ miniShop2.utils.getMenu = function (actions, grid, selected) {
             menu: typeof(a.menu) === 'object'
                 ? miniShop2.utils.getMenu(a.menu, grid, selected)
                 : undefined,
+
+            // Объект содержащий базовый конфиг параметров.
+            // Служит для того, чтобы пробросить id статуса в метод xMiniShop.grid.Orders::statusOrder
+            baseConfig: a,
         });
     }
 

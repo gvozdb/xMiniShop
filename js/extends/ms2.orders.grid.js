@@ -18,7 +18,7 @@ Ext.extend(xMiniShop.grid.Orders, Ext.ComponentMgr.types['minishop2-grid-orders'
             this.menu.record = row.data;
         }
         var id = this.menu.record.id; // id заказа из записи выбранного пункта меню
-        var status = btn.initialConfig.baseConfig.status || undefined; // Объект статуса, который проброшен из расширенного PHP процессора mgr/orders/getlist
+        var status = btn.initialConfig.baseConfig.status || undefined; // Объект статуса, который проброшен из расширенного PHP процессора mgr/orders/getlist, при помощи расширенного miniShop2.utils.getMenu
         if (!status || !status.id) {
             return;
         }
