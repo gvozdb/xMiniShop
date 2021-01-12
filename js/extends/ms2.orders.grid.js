@@ -11,20 +11,21 @@ xMiniShop.grid.Orders = function (config) {
 };
 Ext.extend(xMiniShop.grid.Orders, Ext.ComponentMgr.types['minishop2-grid-orders'], {
     /**
-     * 
+     * Меняет статус заказа "на лету"
      */
     statusOrder: function (btn, e, row) {
         if (typeof(row) !== 'undefined') {
             this.menu.record = row.data;
         }
-        var id = this.menu.record.id;
-        var status = btn.initialConfig.baseConfig.status || undefined;
+        var id = this.menu.record.id; // id заказа из записи выбранного пункта меню
+        var status = btn.initialConfig.baseConfig.status || undefined; // Объект статуса, который проброшен из расширенного PHP процессора mgr/orders/getlist
         if (!status || !status.id) {
             return;
         }
         
-        this.loadMask.show();
-        
+        this.loadMask.show(); // Показываем прелоадер на гриде, чтобы менеджер не понатыкал ещё куда-то, пока меняется статус заказа
+
+        // Отсылаем запрос в наш процессор mgr/orders/status, в котором происходит смена статуса
         MODx.Ajax.request({
             url: this.config.url,
             params: {
@@ -37,7 +38,7 @@ Ext.extend(xMiniShop.grid.Orders, Ext.ComponentMgr.types['minishop2-grid-orders'
                     fn: function (r) {
                         // console.log('xMiniShop.grid.Orders / success / r', r);
                         
-                        this.refresh();
+                        this.refresh(); // Обновляем гриду, чтобы сбросить прелоадер и обновить все статусы заказов в таблице
                     },
                     scope: this
                 },
@@ -52,7 +53,7 @@ Ext.extend(xMiniShop.grid.Orders, Ext.ComponentMgr.types['minishop2-grid-orders'
     },
     
     /**
-     * 
+     * Перезаписываем метод, чтобы создать наши сабменюшки
      */
     addContextMenuItem: function (items) {
         var l = items.length;
@@ -92,7 +93,7 @@ Ext.extend(xMiniShop.grid.Orders, Ext.ComponentMgr.types['minishop2-grid-orders'
                 scope: options.scope || this,
                 options: options,
                 handler: h,
-                menu: options.menu || undefined,
+                menu: options.menu || undefined, // по-сути одна единственная строчка, ради которой мы расширили весь метод. Хм, и почему её не было сразу?..
             });
         }
     },

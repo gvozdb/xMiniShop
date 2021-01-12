@@ -1,5 +1,13 @@
 Ext.namespace('miniShop2.utils');
 
+/**
+ * Используется для построения пунктов меню для метода addContextMenuItem в гриде
+ *
+ * @param actions
+ * @param grid
+ * @param selected
+ * @returns {[]}
+ */
 miniShop2.utils.getMenu = function (actions, grid, selected) {
     var menu = [];
     var cls, icon, title, action = '';
@@ -42,11 +50,6 @@ miniShop2.utils.getMenu = function (actions, grid, selected) {
         }
         title = a['title'] ? a['title'] : a['title'];
         action = a['action'] ? grid[a['action']] : '';
-        
-        var items = undefined;
-        if (typeof(a.menu) === 'object') {
-            items = miniShop2.utils.getMenu(a.menu, grid, selected);
-        }
 
         menu.push({
             baseConfig: a,
@@ -55,8 +58,12 @@ miniShop2.utils.getMenu = function (actions, grid, selected) {
                 '<span class="{0}"><i class="x-menu-item-icon {1}"></i>{2}</span>',
                 cls, icon, title
             ),
-            menu: items,
             scope: grid,
+
+            // Добавляем сабменюшки, чтобы список статусов был выпадающим при наведении
+            menu: typeof(a.menu) === 'object'
+                ? miniShop2.utils.getMenu(a.menu, grid, selected)
+                : undefined,
         });
     }
 

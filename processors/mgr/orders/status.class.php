@@ -1,7 +1,5 @@
 <?php
 
-// require_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
-
 class xmsOrderStatusUpdateProcessor extends modObjectProcessor
 {
     public $objectType = 'msOrder';
@@ -42,10 +40,13 @@ class xmsOrderStatusUpdateProcessor extends modObjectProcessor
         }
 
         if ((int)$order->get('status') !== $status_id) {
+            // Меняем статус нативными средствами miniShop2, чтобы запустились все связанные с этим события
             $change_status = $this->ms2->changeOrderStatus($order->get('id'), $status_id);
             if ($change_status !== true) {
+                // Если при изменении статуса произошла ошибка, то отображаем менеджеру эту ошибку
                 return $this->failure($change_status);
             }
+            // Запрашиваем объект заказа снова из базы, чтобы получить его уже со всеми внесёнными изменениями
             $order = $this->modx->getObject($this->classKey, $order->get('id'), false);
         }
 
